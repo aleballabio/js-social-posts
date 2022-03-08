@@ -63,69 +63,79 @@ const posts = [
         created: "2021-03-05"
     }
 ];
-
 const arrPostsIDLiked = [];
 
 
 for (let times = 0; times < posts.length; times++) {
     const arrPostsPosted = posts[times];
-    GetPostCreation(arrPostsPosted);
-}
-
-
-
-//Posts Creation
-function GetPostCreation(obj) {
     let container = document.querySelector(".posts-list");
+    let dateSplit = arrPostsPosted.created.split("-")
+    console.log(dateSplit);
+    //Posts Creation
+    let counter = arrPostsPosted.likes
+    const postElement = document.createElement("div");
 
-    let postCreation = `
+
+    postElement.innerHTML = `
     <div class="post">
             <div class="post__header">
                 <div class="post-meta">                    
                 <div class="post-meta__icon">
-                <img class="profile-pic" src="${obj.author.image}" alt="${obj.author.name}">
+                <img class="profile-pic" src="${arrPostsPosted.author.image}" alt="${arrPostsPosted.author.name}">
                     </div>
                     <div class="post-meta__data">
-                    <div class="post-meta__author">${obj.author.name}</div>
-                    <div class="post-meta__time">${obj.created}</div>
+                    <div class="post-meta__author">${arrPostsPosted.author.name}</div>
+                    <div class="post-meta__time">${dateSplit[2]}/${dateSplit[1]}/${dateSplit[0]}</div>
                     </div>
                     </div>
                     </div>
-                <div class="post__text">${obj.content}</div>
+                <div class="post__text">${arrPostsPosted.content}</div>
                 <div class="post__image">
-                <img src="${obj.media}" alt="">
+                <img src="${arrPostsPosted.media}" alt="">
             </div>
             <div class="post__footer">
             <div class="likes js-likes">
             <div class="likes__cta">
-            <a class="like-button  js-like-button" href="#" data-postid="${obj.id}">
+            <a class="like-button  js-like-button" href="#" data-postid="${arrPostsPosted.id}">
             <i class="like-button__icon fas fa-thumbs-up" aria-hidden="true"></i>
                         <span class="like-button__label">Mi Piace</span>
                         </a>
                         </div>
                         <div class="likes__counter">
-                        Piace a <b id="like-counter-1" class="js-likes-counter">${obj.likes}</b> persone
+                        Piace a <b id="like-counter-1" class="js-likes-counter">${counter}</b> persone
                         </div>
                         </div>
                         </div>
                         </div>`;
 
-    container.innerHTML += postCreation;
-    postCreation = document.querySelector(".post")
-    let btnLikes = postCreation.querySelector(".js-like-button");
+    //Button to Add  Likes
+
+    let btnLikes = postElement.querySelector(".js-like-button");
+    let btnLikesCounter = postElement.querySelector(".js-likes-counter");
     btnLikes.addEventListener("click", addLikes);
 
     function addLikes(event) {
-        let counter = obj.likes;
-        counter++;
-        arrPostsIDLiked.push(obj.id);
-        btnLikes.classList.toggle("like-button--liked");
+
+
+        if (arrPostsIDLiked.includes(arrPostsPosted.id)) {
+            btnLikes.classList.remove("like-button--liked");
+            let arrIndex = arrPostsIDLiked.indexOf(arrPostsPosted.id);
+            arrPostsIDLiked.splice(arrIndex, 1);
+            console.log(arrPostsIDLiked);
+            counter--;
+            btnLikesCounter.innerHTML = counter;
+        }
+        else {
+            btnLikes.classList.add("like-button--liked");
+            arrPostsIDLiked.push(arrPostsPosted.id);
+            counter++;
+            btnLikesCounter.innerHTML = counter;
+        }
         event.preventDefault();
         console.log(arrPostsIDLiked);
 
     }
 
+    container.append(postElement);
+
 }
-
-
-
